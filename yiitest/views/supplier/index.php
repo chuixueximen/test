@@ -72,7 +72,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         'filename' => '导出_'.date('Y-m-d'),
 //         'selectedColumns'=> [1, 2], // 导出不选中#和操作栏
-//         'hiddenColumns'=>[0, 3], // 隐藏#和操作栏
+        'hiddenColumns'=>[0], // 隐藏#和操作栏
     ])?>
 
 
