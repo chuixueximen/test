@@ -3,7 +3,8 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
-use yii\grid\GridView;
+use kartik\grid\GridView;
+use kartik\export\ExportMenu;
 use app\models\Supplier;
 
 /* @var $this yii\web\View */
@@ -23,29 +24,56 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php echo $this->render('_search', ['model' => $searchModel]); ?>
 
+    <?php $gridColumns = [
+        [
+            'name' => 'id',
+            'class' => 'yii\grid\CheckboxColumn',
+        ],
+        'id',
+        'name',
+        'code',
+        [
+            'attribute' => 't_status',
+            'filter' => $searchModel->getTStatusList(),
+        ],
+        [
+            'class' => ActionColumn::className(),
+            'urlCreator' => function ($action, Supplier $model, $key, $index, $column) {
+                return Url::toRoute([$action, 'id' => $model->id]);
+             }
+        ],
+    ];?>
+    
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
-        'columns' => [
-            [
-                'name' => 'id',
-                'class' => 'yii\grid\CheckboxColumn',
-            ],
-            'id',
-            'name',
-            'code',
-            [
-                'attribute' => 't_status',
-                'filter' => $searchModel->getTStatusList(),
-            ],
-            [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Supplier $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
-            ],
-        ],
+        'filterSelector' => "input[name='".$dataProvider->getPagination()->pageParam."']",
+        'columns' => $gridColumns,
+        'export' => false,
     ]); ?>
+    
+    <?= ExportMenu::widget([
+        'dataProvider' => $dataProvider,
+        'columns' => $gridColumns,
+        'encoding' => 'gb2312',
+        'dropdownOptions' => [
+            'label' => '导出',
+            'class' => 'btn btn-default'
+        ],
+        'exportConfig' => [
+            ExportMenu::FORMAT_TEXT => false,
+            ExportMenu::FORMAT_PDF => false,
+            ExportMenu::FORMAT_EXCEL_X => false,
+            ExportMenu::FORMAT_HTML => false,
+            ExportMenu::FORMAT_EXCEL => false,
+        ],
+        'columnSelectorOptions'=>[
+            'label' => '选择字段',
+        ],
+        'filename' => '导出_'.date('Y-m-d'),
+        'selectedColumns'=> [1, 2], // 导出不选中#和操作栏
+        'hiddenColumns'=>[0, 3], // 隐藏#和操作栏
+    ])?>
 
 
 </div>
