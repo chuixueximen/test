@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php $gridColumns = [
         [
             'name' => 'id',
-            'class' => 'yii\grid\CheckboxColumn',
+            'class' => 'kartik\grid\CheckboxColumn',
         ],
         'id',
         'name',
@@ -44,21 +44,18 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ];?>
     
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'filterSelector' => "input[name='".$dataProvider->getPagination()->pageParam."']",
-        'columns' => $gridColumns,
-        'export' => false,
-    ]); ?>
-    
     <?= ExportMenu::widget([
         'dataProvider' => $dataProvider,
         'columns' => $gridColumns,
         'encoding' => 'gb2312',
         'dropdownOptions' => [
             'label' => '导出',
-            'class' => 'btn btn-default'
+            'class' => 'btn btn-default',
+            'export' => true,
+            'toolbar'=>[
+                '{export}',
+                '{toggleData}'
+            ],
         ],
         'exportConfig' => [
             ExportMenu::FORMAT_TEXT => false,
@@ -73,7 +70,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'filename' => '导出_'.date('Y-m-d'),
 //         'selectedColumns'=> [1, 2], // 导出不选中#和操作栏
         'hiddenColumns'=>[0], // 隐藏#和操作栏
-    ])?>
-
-
+    ]);?>
+    
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'filterSelector' => "input[name='".$dataProvider->getPagination()->pageParam."']",
+        'columns' => $gridColumns,
+        'export' => false,
+    ]); ?>
+    
 </div>
